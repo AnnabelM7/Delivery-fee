@@ -36,13 +36,13 @@ public class DeliveryFeeController {
     @GetMapping
     public ResponseEntity<?> getDeliveryFee(@RequestParam String city, @RequestParam String vehicleType) {
         // Validate city input
-        String weatherStation = validateCity(city);
+        String weatherStation = validateCity(city.toLowerCase());
         if (weatherStation == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"error\": \"Invalid city\"}");
         }
         // Validate the vehicle type
         try {
-            VehicleType.fromString(vehicleType);
+            VehicleType.fromString(vehicleType.toLowerCase());
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"error\": \"" + e.getMessage() + "\"}");
         }

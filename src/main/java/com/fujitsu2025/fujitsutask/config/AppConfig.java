@@ -1,10 +1,10 @@
 package com.fujitsu2025.fujitsutask.config;
 
+// Configuration class for Spring Bean
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;
-
-// Configuration class for Spring Bean
 
 @Configuration
 public class AppConfig {

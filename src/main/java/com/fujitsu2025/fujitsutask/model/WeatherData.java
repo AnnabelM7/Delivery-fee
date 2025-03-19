@@ -4,8 +4,6 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-
 // Entity is mapped to the "weather_data" table in the database
 @Entity
 @Table(name = "weather_data")

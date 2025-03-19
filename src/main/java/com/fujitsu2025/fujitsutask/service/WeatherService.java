@@ -19,7 +19,6 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
-import java.time.LocalDateTime;
 
 // fetches weather data from an API
 
@@ -35,7 +34,8 @@ public class WeatherService {
 
     /**
      * Constructor
-     * @param repository - to store the weather data into the database
+     *
+     * @param repository   - to store the weather data into the database
      * @param restTemplate - used for making HTTP requests
      */
     public WeatherService(WeatherDataRepository repository, RestTemplate restTemplate) {

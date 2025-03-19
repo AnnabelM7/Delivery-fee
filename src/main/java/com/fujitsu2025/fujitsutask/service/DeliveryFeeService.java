@@ -15,14 +15,18 @@ public class DeliveryFeeService {
 
 
     /**
-     *  calculates the total delivery fee based on the city, weather data, and vehicle type
-     * @param city - where the delivery is taking place
+     * calculates the total delivery fee based on the city, weather data, and vehicle type
+     *
+     * @param city        - where the delivery is taking place
      * @param weatherData - weather data for the city
      * @param vehicleType - what vehicle used for delivery
      * @return total delivery fee
      */
     public double calculateDeliveryFee(String city, WeatherData weatherData, String vehicleType) {
+        city=capitalizeName(city);
+        vehicleType=capitalizeName(vehicleType);
         logger.info("Calculating delivery fee for city: {}, vehicle type: {}", city, vehicleType);
+
 
         double baseFee = getBaseFee(city, vehicleType);
         double extraFee = calculateExtraFees(weatherData, vehicleType);
@@ -36,18 +40,15 @@ public class DeliveryFeeService {
 
     /**
      * Base fee for the specified city and vehicle type
-     * @param city - where the delivery is taking place
+     *
+     * @param city        - where the delivery is taking place
      * @param vehicleType - what vehicle used for delivery
      * @return base fee rot city and vehicle type
      */
     private double getBaseFee(String city, String vehicleType) {
         logger.debug("Getting base fee for city: {}, vehicle type: {}", city, vehicleType);
 
-        Map<String, Map<String, Double>> baseFees = Map.of(
-                "Tallinn", Map.of("Car", 4.0, "Scooter", 3.5, "Bike", 3.0),
-                "Tartu", Map.of("Car", 3.5, "Scooter", 3.0, "Bike", 2.5),
-                "Pärnu", Map.of("Car", 3.0, "Scooter", 2.5, "Bike", 2.0)
-        );
+        Map<String, Map<String, Double>> baseFees = Map.of("Tallinn", Map.of("Car", 4.0, "Scooter", 3.5, "Bike", 3.0), "Tartu", Map.of("Car", 3.5, "Scooter", 3.0, "Bike", 2.5), "Pärnu", Map.of("Car", 3.0, "Scooter", 2.5, "Bike", 2.0));
 
         double fee = baseFees.getOrDefault(city, Map.of()).getOrDefault(vehicleType, 0.0);
         logger.debug("Base fee found: {}", fee);
@@ -57,6 +58,7 @@ public class DeliveryFeeService {
 
     /**
      * Calculates extra fees based on weather conditions
+     *
      * @param weatherData - weather data for the city
      * @param vehicleType - what vehicle used for delivery
      * @return extra fee based on weather conditions
@@ -73,7 +75,7 @@ public class DeliveryFeeService {
             if (weatherData.getAirTemperature() < -10) {
                 atef += 1.0;
             } else if (weatherData.getAirTemperature() < 0) {
-                atef +=0.5;
+                atef += 0.5;
             }
         }
         // Extra fee based on wind speed (wsef)
@@ -81,20 +83,19 @@ public class DeliveryFeeService {
             if (weatherData.getWindSpeed() > 20) {
                 throw new IllegalArgumentException("Usage of selected vehicle type is forbidden");
             }
-            if (weatherData.getWindSpeed() >= 10){
+            if (weatherData.getWindSpeed() >= 10) {
                 wsef += 0.5;
             }
         }
         //Extra fee based on weather phenomenon (wpef)
         if (vehicleType.equals("Scooter") || vehicleType.equals("Bike")) {
-            if (weatherData.getWeatherPhenomenon().toLowerCase().contains("snow") ||
-                    weatherData.getWeatherPhenomenon().toLowerCase().contains("sleet")) {
+            if (weatherData.getWeatherPhenomenon().toLowerCase().contains("snow") || weatherData.getWeatherPhenomenon().toLowerCase().contains("sleet")) {
                 wpef += 1.0;
             }
             if (weatherData.getWeatherPhenomenon().toLowerCase().contains("rain")) {
                 wpef += 0.5;
             }
-            if (weatherData.getWeatherPhenomenon().matches(".*glaze.*|.*hail.*|.*thunder.*")) {
+            if (weatherData.getWeatherPhenomenon().matches("(?i).*glaze.*|.*hail.*|.*thunder.*")) {
                 throw new IllegalArgumentException("Usage of selected vehicle type is forbidden");
             }
         }
@@ -102,5 +103,20 @@ public class DeliveryFeeService {
         double totalExtraFee = atef + wpef + wsef;
         logger.debug("Total extra fee calculated: {}", totalExtraFee);
 
-        return totalExtraFee;    }
+        return totalExtraFee;
+    }
+
+    /**
+     * Capitalizes the first letter of a city name and converts the rest to lowercase.
+     *
+     * @param city The name of the city.
+     * @return The city name with the first letter capitalized and the rest in lowercase.
+     */
+    private String capitalizeName(String city) {
+        if (city == null || city.isEmpty()) {
+            return city;
+        }
+        return city.substring(0, 1).toUpperCase() + city.substring(1).toLowerCase();
+    }
+
 }
