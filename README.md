@@ -33,7 +33,7 @@ Calculates the delivery fee based on the city, vehicle type, and the most recent
 
 ### **Example**
 Request (using curl):
-```json
+```
 curl -X GET "http://localhost:8080/api/delivery-fee?city=Tallinn&vehicleType=Car"
 ```
 
